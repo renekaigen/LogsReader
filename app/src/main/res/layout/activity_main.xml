@@ -1,0 +1,71 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+
+    <Button
+    android:id="@+id/btnRB"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:text="RB"
+    />
+
+    <Button
+        android:id="@+id/btnRM"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="RM"
+        android:layout_toRightOf="@+id/btnRB"
+        />
+
+    <Button
+        android:id="@+id/btnLM"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="LM"
+        android:layout_below="@+id/btnRB"
+        />
+
+    <Button
+        android:id="@+id/btnSN"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="SN"
+        android:layout_below="@+id/btnRM"
+        android:layout_toRightOf="@+id/btnLM"
+        />
+
+    <Button
+        android:id="@+id/btnListenLogs"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Listen Logs"
+        android:layout_toRightOf="@+id/btnRM"
+        />
+
+    <Button
+        android:id="@+id/btnClearLogs"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Clear Logs"
+        android:layout_toRightOf="@+id/btnSN"
+        android:layout_below="@+id/btnListenLogs"
+        />
+
+
+
+
+    <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/btnLM">
+    <TextView
+        android:id="@+id/txtLogs"
+        android:text="@string/hello_world" android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </ScrollView>
+
+
+</RelativeLayout>
