@@ -1,6 +1,7 @@
 package com.example.root.logsreader;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -10,14 +11,20 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.regex.Pattern;
 
 
 public class MainActivity extends ActionBarActivity {
     private StringBuilder log;
-    private Button RM,RB,SN,LM,Clear,Listen;
+    private Button RM,RB,SN,LM,Clear,Listen,Save;
     private TextView tv;
     private String tagFilter="(D/BUENO|D/MALO|E/)";
     @Override
@@ -48,6 +55,8 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+
+
         RM.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +82,7 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Log.d("OPERATION", "Borrando Logs");
                 try {
-                    limpiar_logs();
+                    limpiar_logs(1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -123,18 +132,99 @@ public class MainActivity extends ActionBarActivity {
                 log.append(separator);
             }
             tv.setText(log.toString()); ///asignando a un textView
+            guardarLogArchivoAndBorrar(log);
         } catch (IOException e) {
 
         }
     }
 
-    public void limpiar_logs() throws IOException {
+    public void limpiar_logs(int tipo) throws IOException {
         Process process = new ProcessBuilder()
                 .command("logcat", "-c")
                 .redirectErrorStream(true)
                 .start();
-        tv.setText("Vaciado");
+        if(tipo==1) {
+            tv.setText("Vaciado");
+        }
     }
+
+    public void guardarLogArchivo(StringBuilder log){
+        /*Aqui lo que hace es sobreescribir*/
+        //convert log to string
+        final String logString = new String(log.toString());
+
+        //create text file in SDCard
+        File sdCard = Environment.getExternalStorageDirectory();
+        File dir = new File (sdCard.getAbsolutePath() + "/myLogcat");
+        dir.mkdirs();
+        File file = new File(dir, "logcat.txt");
+
+        try {
+            //to write logcat in text file
+            FileOutputStream fOut = new FileOutputStream(file);
+            OutputStreamWriter osw = new OutputStreamWriter(fOut);
+
+            // Write the string to the file
+            osw.write(logString);
+            osw.flush();
+            osw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void guardarLogArchivoAndBorrar(StringBuilder log) throws IOException {
+        /*Aqui se anexa , no sobreescribe*/
+
+        //convert log to string
+        final String logString = new String(log.toString());
+
+        //create text file in SDCard
+        File sdCard = Environment.getExternalStorageDirectory();
+        File dir = new File (sdCard.getAbsolutePath() + "/myLogcat");
+        dir.mkdirs();
+        File logFile = new File(dir+"/logcat.txt");
+        if (!logFile.exists()) {
+            try {
+                logFile.createNewFile();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        try {
+            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+            buf.append(logString);
+            buf.newLine();
+            buf.close();
+            limpiar_logs(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // File file = new File(dir, "logcat.txt");
+/*
+        try {
+            //to write logcat in text file
+            FileOutputStream fOut = new FileOutputStream(file);
+            OutputStreamWriter osw = new OutputStreamWriter(fOut);
+
+            // Write the string to the file
+            osw.append(logString);
+            osw.flush();
+            osw.close();
+
+            limpiar_logs(0);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+*/
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
